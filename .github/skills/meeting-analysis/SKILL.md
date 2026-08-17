@@ -1,19 +1,27 @@
 ---
+
 name: meeting-analysis
-description: Metodologia para analisar, resumir, revisar e validar transcrições de reuniões, incluindo prints, protótipos, mensagens de erro e outras evidências visuais. Use quando o Meeting Analyst receber uma nova reunião ou ajustes em um resumo existente.
----
+description: Metodologia para analisar e resumir reuniões a partir de transcrições em português ou inglês, anotações fornecidas pelo usuário no chat ou uma combinação dessas fontes. Permite operar sem transcrição, consolidar correções de reconhecimento de fala, incorporar imagens e produzir sempre um meeting-analysis.md em português.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Objetivo
 
-Transformar uma transcrição potencialmente extensa, repetitiva ou imprecisa
-em um artefato conciso, verificável e adequado para revisão humana.
+Transformar informações relacionadas a uma reunião em um artefato:
 
-Esta skill não cria requisitos formais, histórias do Jira, tarefas técnicas,
-arquitetura ou código.
+* conciso;
+* factual;
+* rastreável;
+* revisável;
+* adequado para a próxima etapa do AI-DLC.
+
+Uma transcrição é opcional.
+
+As anotações e o contexto fornecidos pelo usuário no chat são fontes
+válidas e podem ser utilizados como entrada principal.
 
 # Artefato obrigatório
 
-Utilize o template:
+Utilize:
 
 `meeting-summary-template.md`
 
@@ -21,273 +29,537 @@ Produza ou atualize:
 
 `docs/ai-dlc/meetings/<meeting-id>/meeting-analysis.md`
 
-Mantenha todos os títulos do template, mesmo quando uma seção não possuir
-conteúdo.
+Quando o usuário indicar outro caminho, utilize o caminho informado.
 
-Para seções vazias, utilize:
+Mantenha todas as seções do template.
+
+Quando uma seção tiver sido analisada e estiver vazia, utilize:
 
 `Nenhum item identificado.`
 
-Isso permite que agentes posteriores distingam uma seção analisada e vazia
-de uma seção esquecida.
+# Idioma de saída
 
-# Classificação das informações
+A saída deve ser sempre em português do Brasil.
 
-Toda informação relevante deve pertencer a uma das categorias abaixo.
+Isso se aplica a:
 
-## Decisão confirmada
+* frontmatter;
+* títulos;
+* descrições;
+* tabelas;
+* decisões;
+* ações;
+* perguntas;
+* inconsistências;
+* histórico;
+* resposta no chat.
 
-Use quando uma decisão foi explicitamente aprovada ou reconhecida durante
-a reunião.
+Fontes podem estar em português ou inglês.
+
+Preserve no idioma original:
+
+* nomes;
+* siglas;
+* tecnologias;
+* campos;
+* rotas;
+* código;
+* mensagens de erro;
+* identificadores;
+* pequenos trechos necessários para evidência.
+
+# Passo 1 — Determinar o modo de entrada
+
+Classifique como:
+
+## `notes-only`
+
+Não existe transcrição.
+
+Existem anotações, contexto, tópicos ou relato fornecido pelo usuário.
+
+## `transcript-only`
+
+Existe transcrição.
+
+Não existem anotações ou correções adicionais relevantes.
+
+## `transcript-and-notes`
+
+Existem transcrição e anotações, contexto ou correções do usuário.
+
+Registre o modo no frontmatter e na situação da análise.
+
+# Passo 2 — Inventariar as fontes
+
+Crie IDs para todas as fontes.
+
+## Anotações
+
+Utilize:
+
+* `USR-NOTE-001`;
+* `USR-NOTE-002`.
+
+## Contexto confirmado
+
+Utilize:
+
+* `USR-CONTEXT-001`.
+
+## Correções explícitas
+
+Utilize:
+
+* `USR-CORR-001`.
+
+## Transcrições
+
+Utilize:
+
+* `TRN-001`;
+* `TRN-002`.
+
+## Imagens
+
+Utilize:
+
+* `IMG-01`;
+* `IMG-02`.
+
+## Documentos complementares
+
+Utilize:
+
+* `DOC-001`.
+
+Para cada fonte, registre:
+
+* tipo;
+* idioma;
+* identificação;
+* nível de autoridade;
+* finalidade;
+* observações.
+
+# Passo 3 — Interpretar a certeza das anotações
+
+Analise a linguagem utilizada pelo usuário.
+
+## Informação assertiva
 
 Exemplos:
 
-- "Vamos utilizar autenticação por e-mail."
-- "A equipe aprovou manter o endpoint atual."
-- "Ficou decidido que o processamento será assíncrono."
+* “O sistema é responsável pelo reprocessamento.”
+* “A autenticação será feita por e-mail.”
+* “Nossa equipe não altera o sistema legado.”
 
-## Necessidade mencionada
+Classifique como contexto ou informação confirmada pelo usuário.
 
-Use quando alguém expressou algo que o sistema ou a equipe precisa fazer,
-mas ainda não existe formalização suficiente para tratar como requisito.
-
-Exemplos:
-
-- "Precisamos mostrar o motivo da rejeição."
-- "Seria importante conseguir filtrar por empresa."
-
-## Regra ou restrição citada
-
-Use para regras de negócio, limitações técnicas ou condições operacionais
-explicitamente mencionadas.
+## Correção
 
 Exemplos:
 
-- "Somente usuários administradores podem realizar a operação."
-- "O sistema externo aceita no máximo cinquenta itens por lote."
+* “O correto é Kafka.”
+* “A transcrição entendeu CPF, mas foi dito e-mail.”
+* “Isso não foi decidido.”
 
-## Ação
+Classifique como correção explícita.
 
-Use quando uma pessoa ou equipe ficou responsável por realizar algo.
+## Incerteza
 
-Registre:
+Palavras indicativas:
 
-- ação;
-- responsável;
-- prazo, quando informado;
-- situação.
+* acho;
+* talvez;
+* possivelmente;
+* provavelmente;
+* pode ser;
+* não tenho certeza;
+* parece.
 
-## Dúvida
+Classifique como hipótese ou dúvida.
 
-Use quando a resposta ainda precisa ser fornecida por uma pessoa, equipe
-ou fonte autorizada.
+Não transforme frases incertas em decisões.
 
-## Hipótese
+# Passo 4 — Trabalhar sem transcrição
 
-Use quando existe uma interpretação possível, mas insuficientemente
-sustentada.
+Quando o modo for `notes-only`:
 
-Hipóteses nunca devem aparecer em decisões confirmadas.
+1. utilize as anotações como fonte principal;
+2. não exija arquivo;
+3. não invente timestamps;
+4. não invente falas;
+5. não invente participantes;
+6. organize o contexto em linguagem clara;
+7. preserve o nível de certeza informado;
+8. crie dúvidas para lacunas importantes;
+9. registre as limitações da análise;
+10. produza um draft completo.
 
-## Inconsistência
+A análise sem transcrição pode conter:
 
-Use quando:
+* decisões;
+* contexto;
+* necessidades;
+* regras;
+* ações;
+* dúvidas;
+* fora do escopo.
 
-- a transcrição parece incorreta;
-- duas pessoas deram respostas incompatíveis;
-- imagem e transcrição não coincidem;
-- um termo técnico não pôde ser identificado;
-- uma informação mudou ao longo da reunião sem confirmação final.
+Esses itens devem referenciar as fontes `USR-*`.
 
-# Processo de análise
+# Passo 5 — Limpar uma transcrição
 
-## Passo 1 — Inventariar as fontes
+Quando existir transcrição, desconsidere:
 
-Liste:
+* cumprimentos;
+* conversas paralelas;
+* repetições sem informação nova;
+* interrupções sem conclusão;
+* confirmações sociais;
+* ruído de reconhecimento de fala;
+* trechos fora do contexto.
 
-- arquivo principal de transcrição;
-- arquivos complementares;
-- imagens;
-- protótipos;
-- mensagens de erro;
-- correções já fornecidas pelo usuário.
+Preserve:
 
-Não comece pela síntese antes de identificar todas as fontes.
+* decisões;
+* necessidades;
+* regras;
+* restrições;
+* números;
+* datas;
+* responsáveis;
+* sistemas;
+* mensagens de erro;
+* dúvidas;
+* correções realizadas durante a própria reunião.
 
-## Passo 2 — Limpar o ruído
+# Passo 6 — Analisar transcrições em inglês
 
-Desconsidere no resumo:
+Ao analisar inglês:
 
-- cumprimentos;
-- conversas paralelas;
-- repetições sem informação nova;
-- interrupções;
-- confirmações sociais como "sim", "certo" e "entendi";
-- explicações abandonadas e imediatamente corrigidas;
-- falas sem relação com a demanda.
-
-Não desconsidere uma repetição quando ela representar confirmação de uma
-decisão ou esclarecimento de uma regra.
-
-## Passo 3 — Preservar informações críticas
-
-Priorize:
-
-- problema de negócio;
-- objetivo da mudança;
-- sistemas envolvidos;
-- decisões;
-- restrições;
-- valores, limites, datas e prazos;
-- nomes de integrações;
-- erros apresentados;
-- impactos relatados;
-- dependências;
-- responsáveis;
-- dúvidas que impedem avanço.
-
-## Passo 4 — Tratar falhas de transcrição
-
-Quando um termo parecer incorreto:
-
-1. não corrija silenciosamente;
-2. registre o trecho como baixa confiança;
-3. proponha a interpretação apenas como hipótese;
-4. solicite confirmação ao usuário.
+1. compreenda a intenção no idioma original;
+2. sintetize diretamente em português;
+3. não traduza palavra por palavra;
+4. preserve termos técnicos;
+5. preserve mensagens de erro;
+6. registre referências no idioma original;
+7. mantenha o nível de certeza da fala.
 
 Exemplo:
+
+```text
+Original:
+“We might need to add a retry mechanism.”
+
+Resumo:
+Foi levantada a possibilidade de adicionar um mecanismo de nova tentativa.
+
+Classificação:
+Hipótese ou necessidade mencionada, não decisão confirmada.
+```
+
+# Passo 7 — Consolidar transcrição e anotações
+
+Quando o modo for `transcript-and-notes`:
+
+1. leia toda a transcrição;
+2. leia todas as anotações;
+3. crie um mapa de correções;
+4. identifique complementos;
+5. identifique divergências;
+6. aplique correções explícitas;
+7. preserve referências originais;
+8. registre a fonte correta;
+9. crie uma única síntese.
+
+## Exemplo de correção fonética
 
 Transcrição:
 
-`A chamada será feita pelo barramento CCAF.`
+```text
+A integração vai publicar no Cafica.
+```
 
-Saída:
+Anotação:
 
-- Termo transcrito: `CCAF`
-- Possível interpretação: `Kafka`
-- Classificação: baixa confiança
-- Ação necessária: confirmar o nome da tecnologia
+```text
+Onde aparece Cafica, o correto é Kafka.
+```
 
-## Passo 5 — Analisar imagens
+Resultado:
 
-Para cada imagem, registre:
+```text
+A integração publicará no Kafka.
+```
 
-- identificador;
-- arquivo;
-- tipo de evidência;
-- observações visuais;
-- textos legíveis;
-- relação com a reunião;
-- hipótese, quando houver;
-- pergunta aberta.
+Rastreabilidade:
 
-Separe sempre:
+```text
+TRN-001 00:21:40
+USR-CORR-001
+```
 
-### Observação
+## Exemplo de complemento
 
-Algo diretamente visível.
+Transcrição:
+
+```text
+Nós somente enviaremos a solicitação.
+```
+
+Anotação:
+
+```text
+O sistema externo é legado e pertence à equipe Financeira.
+```
+
+Resultado:
+
+* nossa solução é responsável pelo envio;
+* o sistema legado pertence à equipe Financeira;
+* a implementação do legado está fora da responsabilidade da equipe.
+
+As origens devem continuar distintas.
+
+# Passo 8 — Resolver conflitos
+
+Quando anotações e transcrição divergirem:
+
+## Correção explícita
+
+Adote a correção do usuário.
+
+Registre:
+
+* texto original;
+* valor corrigido;
+* fonte;
+* impacto.
+
+## Divergência sem correção explícita
+
+Não escolha silenciosamente.
+
+Registre:
+
+* informações conflitantes;
+* fontes;
+* impacto;
+* pergunta necessária.
 
 Exemplo:
 
-`A imagem exibe a mensagem "Usuário sem permissão".`
+```text
+Transcrição:
+A equipe Financeira realizará o reprocessamento.
 
-### Interpretação
+Anotação:
+A equipe de Plataforma realizará o reprocessamento.
+```
 
-Uma explicação possível.
+Sem uma frase como “o correto é Plataforma”, registre conflito.
 
-Exemplo:
+# Passo 9 — Analisar imagens
 
-`A mensagem pode estar relacionada à validação de perfil.`
+Para cada imagem:
 
-A interpretação deve ser registrada como hipótese, salvo quando houver
-confirmação em outra fonte.
+* atribua ID;
+* registre arquivo;
+* registre idioma dos textos;
+* descreva observações;
+* preserve mensagens originais;
+* explique em português;
+* relacione com outras fontes;
+* identifique hipóteses;
+* crie perguntas.
 
-## Passo 6 — Criar a síntese
+Separe:
+
+## Observação
+
+Algo visível.
+
+## Interpretação
+
+Possível significado.
+
+A interpretação deve permanecer hipótese até confirmação.
+
+# Passo 10 — Classificar informações
+
+Toda informação relevante deve ser uma das categorias.
+
+## Decisão confirmada
+
+Aprovada explicitamente pelo usuário ou durante a reunião.
+
+## Contexto confirmado
+
+Informação necessária para compreender o cenário.
+
+## Necessidade mencionada
+
+Algo que se espera do sistema ou processo, mas ainda não formalizado.
+
+## Regra ou restrição
+
+Condição de negócio, técnica ou operacional citada.
+
+## Ação
+
+Atividade atribuída a uma pessoa ou equipe.
+
+## Dúvida
+
+Informação que precisa ser respondida.
+
+## Hipótese
+
+Interpretação não confirmada.
+
+## Inconsistência
+
+Conflito, erro de transcrição ou informação de baixa confiança.
+
+# Passo 11 — Construir o resumo executivo
 
 O resumo executivo deve:
 
-- possuir no máximo oito itens;
-- usar uma frase por item;
-- apresentar o problema, objetivo e principais decisões;
-- evitar detalhes técnicos ainda não validados;
-- não repetir o conteúdo completo das outras seções.
+* ter no máximo oito itens;
+* ser escrito em português;
+* explicar problema e objetivo;
+* incluir decisões principais;
+* incluir impactos relevantes;
+* mencionar bloqueios importantes;
+* não repetir todas as outras seções.
 
-## Passo 7 — Criar rastreabilidade
+# Passo 12 — Registrar correções da transcrição
 
-Sempre que possível, associe informações importantes a:
+Para cada correção relevante, registre:
 
-- timestamp;
-- intervalo de timestamps;
-- número da linha;
-- nome do arquivo;
-- identificador da imagem.
+* ID;
+* trecho ou termo original;
+* valor corrigido;
+* fonte da correção;
+* referência da transcrição;
+* seções impactadas.
+
+Não registre correções puramente gramaticais sem impacto.
+
+Registre correções que alterem:
+
+* tecnologia;
+* nome;
+* sistema;
+* ator;
+* regra;
+* valor;
+* prazo;
+* responsabilidade;
+* comportamento esperado.
+
+# Passo 13 — Criar rastreabilidade
 
 Formatos recomendados:
 
-- `TRANSCRIPT 00:14:20–00:15:05`
-- `TRANSCRIPT linhas 120–138`
-- `IMG-01`
-- `Anotação do usuário — revisão 2`
+```text
+TRN-001 00:14:20–00:15:05
+TRN-001 linhas 120–138
+USR-NOTE-001
+USR-CONTEXT-001
+USR-CORR-001
+IMG-01
+DOC-001 seção 3
+```
 
-Se a fonte não possuir timestamps nem linhas estáveis, utilize um trecho
-curto de referência, sem copiar grandes partes da transcrição.
+Quando a fonte existir somente no chat:
 
-## Passo 8 — Identificar bloqueios
+```text
+USR-NOTE-001 — contexto fornecido pelo usuário na revisão 1
+```
 
-Para cada dúvida aberta, indique:
+Não invente linhas ou timestamps.
 
-- quem pode responder;
-- impacto;
-- se ela bloqueia a próxima etapa;
-- qual informação é necessária.
+# Passo 14 — Registrar limitações
 
-Não classifique toda dúvida como bloqueante.
+Quando não houver transcrição, registre possíveis limitações:
 
-## Passo 9 — Revisar antes de salvar
+* ausência de timestamps;
+* impossibilidade de atribuir falas;
+* ausência do texto integral;
+* contexto baseado nas anotações disponíveis;
+* participantes não identificados;
+* decisões que precisam de confirmação.
 
-Verifique:
+A limitação não deve invalidar automaticamente a análise.
 
-- se alguma hipótese foi apresentada como fato;
-- se alguma decisão está sem evidência;
-- se uma correção do usuário foi aplicada;
-- se existem contradições não registradas;
-- se as imagens foram tratadas como evidência separada;
-- se o resumo está realmente menor do que a transcrição;
-- se foram criadas histórias ou tarefas indevidamente;
-- se o status está correto.
+# Passo 15 — Aplicar novas anotações
 
-# Processo de ajuste
+Quando o usuário enviar novas informações:
 
-Ao receber ajustes do usuário:
+1. classifique cada informação;
+2. registre nova fonte;
+3. identifique itens impactados;
+4. atualize apenas as seções necessárias;
+5. preserve IDs existentes;
+6. incremente a revisão;
+7. atualize o histórico;
+8. mantenha o status como `draft`.
 
-1. leia a revisão atual;
-2. aplique as mudanças solicitadas;
-3. atualize seções impactadas;
-4. incremente `revision`;
-5. atualize `updated_at` somente quando a informação estiver disponível;
-6. adicione uma linha ao histórico;
-7. não reescreva todo o documento sem necessidade;
-8. mantenha o status como `draft`, salvo validação explícita.
+Não obrigue o usuário a reenviar as fontes anteriores.
 
-# Critério de handoff
+# Passo 16 — Revisar consistência
+
+Antes de salvar, verifique:
+
+* todas as fontes foram inventariadas;
+* modo de entrada está correto;
+* idioma de saída é português;
+* termos técnicos foram preservados;
+* correções foram aplicadas;
+* correções possuem rastreabilidade;
+* anotações não foram ignoradas;
+* hipóteses não foram tratadas como fatos;
+* decisões possuem fonte;
+* conflitos foram registrados;
+* imagens não foram superinterpretadas;
+* o resumo não depende apenas do histórico do chat;
+* o artefato contém o contexto necessário para uma nova sessão.
+
+# Passo 17 — Calcular handoff
 
 Defina `handoff_ready: true` somente quando:
 
-- o usuário tiver validado o documento;
-- todas as inconsistências relevantes estiverem explícitas;
-- dúvidas bloqueantes tiverem sido respondidas ou aceitas conscientemente;
-- as fontes utilizadas estiverem registradas.
+* o usuário tiver validado o resumo;
+* dúvidas bloqueantes estiverem resolvidas ou aceitas;
+* conflitos importantes estiverem explícitos;
+* fontes estiverem registradas;
+* correções relevantes estiverem incorporadas;
+* existir contexto suficiente para o Requirements Engineer.
 
-Um documento pode ser validado contendo dúvidas não bloqueantes.
+A ausência de transcrição não impede `handoff_ready: true`.
 
 # Economia de contexto
 
-Não replique a transcrição no artefato.
+Não copie integralmente:
 
-Não inclua grandes citações.
+* transcrições;
+* anotações longas;
+* documentos;
+* conversas.
+
+Utilize sínteses e referências.
 
 Não repita a mesma informação em várias seções.
 
-Prefira referências aos trechos originais.
+No chat, apresente somente:
 
-No chat, apresente apenas um resumo das alterações e o caminho do artefato.
+* caminho;
+* revisão;
+* status;
+* modo de entrada;
+* correções;
+* mudanças;
+* dúvidas.

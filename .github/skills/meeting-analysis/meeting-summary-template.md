@@ -1,135 +1,209 @@
 ---
+
 artifact_type: meeting-analysis
-schema_version: "1.0"
+schema_version: "2.0"
 meeting_id: "<meeting-id>"
-title: "<título da reunião>"
+title: "<título da reunião ou alinhamento>"
 meeting_date: "<YYYY-MM-DD ou não informado>"
 status: "draft"
 revision: 1
 handoff_ready: false
-source_files: []
+source_mode: "<notes-only | transcript-only | transcript-and-notes>"
+source_languages: []
+output_language: "pt-BR"
+source_inputs: []
+transcript_files: []
 image_files: []
 created_by: "Meeting Analyst"
 created_at: "<data/hora ou não informado>"
 updated_at: "<data/hora ou não informado>"
 validated_by: null
 validated_at: null
----
+------------------
 
 # Análise da reunião — <título>
 
-## 1. Resumo executivo
+## 1. Situação da análise
 
-- <Problema principal discutido>
-- <Objetivo pretendido>
-- <Decisão ou conclusão relevante>
-- <Impacto relevante>
-- <Principal dúvida ou bloqueio>
+* Meeting ID: `<meeting-id>`
+* Status: `<draft ou validated>`
+* Revisão: `<número>`
+* Modo de entrada: `<notes-only | transcript-only | transcript-and-notes>`
+* Idiomas das fontes: `<português, inglês ou ambos>`
+* Idioma do resumo: `Português do Brasil`
+* Transcrição disponível: `<sim ou não>`
+* Anotações do usuário disponíveis: `<sim ou não>`
+* Imagens ou documentos complementares: `<quantidade>`
+* Pronto para handoff: `<sim ou não>`
+
+## 2. Resumo executivo
+
+* <Problema ou assunto principal>
+* <Objetivo da discussão>
+* <Decisão ou conclusão relevante>
+* <Impacto relevante>
+* <Principal dúvida ou bloqueio>
 
 Máximo de oito itens.
 
-## 2. Contexto e problema
+## 3. Fontes e cobertura
+
+| ID           | Fonte                             | Tipo        | Idioma                             | Autoridade   | Utilização              |
+| ------------ | --------------------------------- | ----------- | ---------------------------------- | ------------ | ----------------------- |
+| USR-NOTE-001 | Anotações fornecidas pelo usuário | Anotação    | Português                          | Média / Alta | Contexto principal      |
+| USR-CORR-001 | Correção fornecida pelo usuário   | Correção    | Português                          | Alta         | Correção da transcrição |
+| TRN-001      | <arquivo>                         | Transcrição | Português / Inglês                 | Média / Alta | Registro da reunião     |
+| IMG-01       | <arquivo>                         | Imagem      | Português / Inglês / Não aplicável | Complementar | Evidência visual        |
+
+## 4. Limitações da análise
+
+* <ausência de transcrição, timestamps, identificação de participantes ou outra limitação>
+* <informação que não pôde ser confirmada>
+* <parte do contexto baseada somente em anotações>
+
+Quando não houver limitações relevantes:
+
+`Nenhuma limitação relevante identificada.`
+
+## 5. Contexto e problema
 
 ### Contexto
 
-<Descrição curta do cenário atual.>
+<Descrição consolidada do cenário.>
 
 ### Problema
 
-<Descrição objetiva do problema que motivou a reunião.>
+<Descrição objetiva do problema ou assunto discutido.>
 
 ### Resultado esperado mencionado
 
-<Resultado esperado conforme discutido, sem transformá-lo em requisito formal.>
+<Resultado esperado conforme as fontes, sem formalizar requisitos.>
 
-## 3. Decisões confirmadas
+## 6. Correções aplicadas à transcrição
 
-| ID | Decisão | Evidência | Confiança |
-|---|---|---|---|
-| DEC-01 | <decisão> | <timestamp, linha ou fonte> | Alta |
+| ID      | Registro original                | Correção adotada | Origem da correção | Referência original          | Impacto             |
+| ------- | -------------------------------- | ---------------- | ------------------ | ---------------------------- | ------------------- |
+| COR-001 | <termo ou informação transcrita> | <valor correto>  | <USR-CORR-###>     | <TRN-### timestamp ou linha> | <seções impactadas> |
 
-Use `Nenhum item identificado.` quando não houver decisões confirmadas.
+Quando não houver transcrição:
 
-## 4. Necessidades mencionadas
+`Não aplicável — análise realizada sem transcrição.`
 
-| ID | Necessidade | Origem | Situação |
-|---|---|---|---|
-| NEC-01 | <necessidade mencionada> | <fonte> | Mencionada / Confirmada pelo usuário |
+Quando houver transcrição sem correções:
 
-Estas necessidades ainda não são histórias de usuário nem requisitos formais.
+`Nenhuma correção relevante aplicada.`
 
-## 5. Regras e restrições citadas
+## 7. Decisões confirmadas
 
-| ID | Regra ou restrição | Evidência | Confiança |
-|---|---|---|---|
-| REG-01 | <regra ou restrição> | <fonte> | Alta / Média / Baixa |
+| ID     | Decisão   | Evidência         | Confiança    |
+| ------ | --------- | ----------------- | ------------ |
+| DEC-01 | <decisão> | <USR/TRN/DOC/IMG> | Alta / Média |
 
-## 6. Sistemas, áreas e pessoas envolvidas
+Use `Nenhum item identificado.` quando não houver decisão confirmada.
+
+## 8. Contextos confirmados pelo usuário
+
+| ID     | Contexto             | Origem            | Impacto no entendimento |
+| ------ | -------------------- | ----------------- | ----------------------- |
+| CTX-01 | <contexto adicional> | <USR-CONTEXT-###> | <impacto>               |
+
+Esta seção é especialmente importante quando o contexto não foi verbalizado
+na reunião ou quando não existe transcrição.
+
+## 9. Necessidades mencionadas
+
+| ID     | Necessidade   | Origem  | Situação                             |
+| ------ | ------------- | ------- | ------------------------------------ |
+| NEC-01 | <necessidade> | <fonte> | Mencionada / Confirmada pelo usuário |
+
+Estas necessidades ainda não são histórias nem requisitos formais.
+
+## 10. Regras e restrições citadas
+
+| ID     | Regra ou restrição   | Evidência | Confiança            |
+| ------ | -------------------- | --------- | -------------------- |
+| REG-01 | <regra ou restrição> | <fonte>   | Alta / Média / Baixa |
+
+## 11. Sistemas, áreas e pessoas envolvidas
 
 ### Sistemas
 
-- <sistema>
+* <sistema>
 
 ### Áreas ou equipes
 
-- <área ou equipe>
+* <área ou equipe>
 
-### Participantes relevantes para decisões ou ações
+### Participantes relevantes
 
-- <nome ou papel>
+* <nome ou papel>
 
-Não liste participantes que não sejam relevantes para o entendimento ou
-para as ações.
+Não invente participantes quando a fonte não os identificar.
 
-## 7. Ações identificadas
+## 12. Ações identificadas
 
-| ID | Ação | Responsável | Prazo | Situação | Evidência |
-|---|---|---|---|---|---|
-| ACT-01 | <ação> | <pessoa ou equipe> | <prazo ou não informado> | Aberta | <fonte> |
+| ID     | Ação   | Responsável                       | Prazo                    | Situação | Evidência |
+| ------ | ------ | --------------------------------- | ------------------------ | -------- | --------- |
+| ACT-01 | <ação> | <pessoa, equipe ou não informado> | <prazo ou não informado> | Aberta   | <fonte>   |
 
-## 8. Evidências visuais
+## 13. Evidências visuais
 
-| ID | Arquivo | Observação objetiva | Relação com a reunião | Hipótese ou dúvida |
-|---|---|---|---|---|
-| IMG-01 | <arquivo> | <o que é visível> | <relação confirmada> | <hipótese ou pergunta> |
+| ID     | Arquivo   | Texto original relevante       | Observação objetiva | Relação com o contexto | Hipótese ou dúvida     |
+| ------ | --------- | ------------------------------ | ------------------- | ---------------------- | ---------------------- |
+| IMG-01 | <arquivo> | <texto em português ou inglês> | <observação>        | <relação>              | <hipótese ou pergunta> |
 
-Não trate hipóteses visuais como decisões confirmadas.
+## 14. Dúvidas abertas
 
-## 9. Dúvidas abertas
+| ID     | Dúvida                | Quem pode responder | Impacto   | Bloqueante | Origem  |
+| ------ | --------------------- | ------------------- | --------- | ---------- | ------- |
+| QST-01 | <pergunta específica> | <pessoa ou equipe>  | <impacto> | Sim / Não  | <fonte> |
 
-| ID | Dúvida | Quem pode responder | Impacto | Bloqueante | Origem |
-|---|---|---|---|---|---|
-| QST-01 | <pergunta> | <pessoa ou equipe> | <impacto> | Sim / Não | <fonte> |
+## 15. Hipóteses
 
-## 10. Inconsistências e informações de baixa confiança
+| ID     | Hipótese   | Origem  | Motivo da incerteza | Pergunta relacionada |
+| ------ | ---------- | ------- | ------------------- | -------------------- |
+| HYP-01 | <hipótese> | <fonte> | <motivo>            | <QST-###>            |
 
-| ID | Informação | Motivo da incerteza | Possível interpretação | Ação necessária |
-|---|---|---|---|---|
-| UNC-01 | <informação> | <motivo> | <hipótese ou não informado> | <confirmação necessária> |
+Hipóteses não são decisões confirmadas.
 
-## 11. Itens explicitamente fora do escopo
+## 16. Inconsistências e informações de baixa confiança
 
-- <item declarado fora do escopo>
+| ID     | Informação   | Fontes envolvidas | Motivo   | Possível interpretação | Ação necessária          |
+| ------ | ------------ | ----------------- | -------- | ---------------------- | ------------------------ |
+| UNC-01 | <informação> | <TRN/USR/DOC/IMG> | <motivo> | <hipótese>             | <confirmação necessária> |
 
-Não inferir itens fora do escopo sem evidência.
+## 17. Itens explicitamente fora do escopo
 
-## 12. Índice das fontes
+* <item declarado fora do escopo>
 
-| Fonte | Tipo | Identificação | Observação |
-|---|---|---|---|
-| SRC-01 | Transcrição | <caminho> | <informação relevante> |
-| IMG-01 | Imagem | <arquivo> | <descrição curta> |
+Não inferir itens fora do escopo sem uma fonte.
 
-## 13. Condição para próxima etapa
+## 18. Índice das fontes
 
-- Status da revisão: `<draft ou validated>`
-- Existem dúvidas bloqueantes: `<sim ou não>`
-- Existem inconsistências não tratadas: `<sim ou não>`
-- Artefato validado pelo usuário: `<sim ou não>`
-- Pronto para handoff: `<sim ou não>`
+| ID           | Tipo                | Identificação                   | Idioma        | Observação        |
+| ------------ | ------------------- | ------------------------------- | ------------- | ----------------- |
+| USR-NOTE-001 | Anotação do usuário | Contexto fornecido na revisão 1 | Português     | <descrição curta> |
+| USR-CORR-001 | Correção do usuário | Correção fornecida na revisão 2 | Português     | <descrição curta> |
+| TRN-001      | Transcrição         | <caminho>                       | Inglês        | <descrição curta> |
+| IMG-01       | Imagem              | <arquivo>                       | Não aplicável | <descrição curta> |
 
-## 14. Histórico de revisões
+## 19. Condição para próxima etapa
 
-| Revisão | Data | Autor | Alteração |
-|---|---|---|---|
-| 1 | <data ou não informado> | Meeting Analyst | Criação inicial a partir das fontes informadas |
+* Resumo revisado pelo usuário: `<sim ou não>`
+* Fontes registradas: `<sim ou não>`
+* Correções relevantes incorporadas: `<sim, não ou não aplicável>`
+* Existem dúvidas bloqueantes: `<sim ou não>`
+* Existem conflitos relevantes abertos: `<sim ou não>`
+* Contexto suficiente para Requirements Engineer: `<sim ou não>`
+* Artefato validado pelo usuário: `<sim ou não>`
+* Pronto para handoff: `<sim ou não>`
+
+### Bloqueios para handoff
+
+* <QST-###, UNC-### ou nenhum bloqueio>
+
+## 20. Histórico de revisões
+
+| Revisão | Data                    | Autor           | Alteração                                      |
+| ------- | ----------------------- | --------------- | ---------------------------------------------- |
+| 1       | <data ou não informada> | Meeting Analyst | Criação inicial a partir das fontes informadas |
